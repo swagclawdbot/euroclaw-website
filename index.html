@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EuroClaw — Your Personal AI Box</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: #1e1e2e;
+      --accent: #6c63ff;
+      --accent2: #00d4aa;
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --card: #15151f;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,15,0.9);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+    .logo em { color: var(--accent2); font-style: normal; }
+
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: white !important;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: opacity 0.2s !important;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(108,99,255,0.15);
+      border: 1px solid rgba(108,99,255,0.3);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+
+    h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); }
+
+    /* EU TRUST BAR */
+    .trust-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .trust-item span { font-size: 1.2rem; }
+
+    /* HOW IT WORKS */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 3.5rem;
+    }
+
+    /* STEPS */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .step-num {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--border);
+      margin-bottom: 1rem;
+      letter-spacing: -2px;
+    }
+
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      transition: border-color 0.2s;
+    }
+    .feature:hover { border-color: var(--accent); }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* PRICING */
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .plan {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.2rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .plan:hover { border-color: var(--accent); }
+
+    .plan.featured {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(108,99,255,0.08), rgba(0,212,170,0.04));
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -0.7rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.8rem;
+      border-radius: 100px;
+    }
+
+    .plan-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-price {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 0.25rem;
+    }
+
+    .plan-price sup {
+      font-size: 1.2rem;
+      font-weight: 600;
+      vertical-align: super;
+    }
+
+    .plan-sub {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .plan-features li {
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .plan-features li:last-child { border-bottom: none; }
+
+    .plan-features .check { color: var(--accent2); font-size: 0.85rem; }
+
+    .plan-btn {
+      display: block;
+      text-align: center;
+      padding: 0.8rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+
+    .plan.featured .plan-btn {
+      background: var(--accent);
+      color: white;
+    }
+    .plan:not(.featured) .plan-btn {
+      background: var(--border);
+      color: var(--text);
+    }
+    .plan-btn:hover { opacity: 0.85; }
+
+    /* EU SECTION */
+    .eu-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eu-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .eu-inner { grid-template-columns: 1fr; gap: 2rem; }
+      nav ul { display: none; }
+    }
+
+    .eu-content h2 {
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+
+    .eu-content p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .eu-flags {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .eu-flag-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .eu-flag-item .flag { font-size: 1.8rem; }
+    .eu-flag-item .loc { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* TERMINAL MOCKUP */
+    .terminal {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      padding: 1.5rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      margin: 3rem auto 0;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    .terminal-bar {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.red { background: #ff5f57; }
+    .dot.yellow { background: #febc2e; }
+    .dot.green { background: #28c840; }
+
+    .t-muted { color: #6b7280; }
+    .t-green { color: #22c55e; }
+    .t-blue { color: #60a5fa; }
+    .t-purple { color: #a78bfa; }
+    .t-yellow { color: #fbbf24; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Euro<span>Claw</span><em>.eu</em></div>
+  <ul>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#waitlist" class="nav-cta">Join waitlist</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">🇪🇺 European AI · Private by design</div>
+  <h1>Your personal AI box.<br><span class="highlight">Runs in Europe. Owned by you.</span></h1>
+  <p>We ship a Hetzner VPS pre-loaded with OpenClaw and a Mistral model. Your AI, your data, your rules — no Big Tech, no US cloud.</p>
+  <div class="cta-group">
+    <a href="#waitlist" class="btn-primary">Join the waitlist</a>
+    <a href="#how" class="btn-secondary">See how it works →</a>
+  </div>
+
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+    <div><span class="t-muted">$</span> <span class="t-green">openclaw status</span></div>
+    <div><span class="t-blue">●</span> OpenClaw <span class="t-green">running</span> · v1.4.2</div>
+    <div><span class="t-blue">●</span> Model: <span class="t-purple">mistral-small-3.1</span> · local · <span class="t-green">0ms latency</span></div>
+    <div><span class="t-blue">●</span> Location: <span class="t-yellow">Falkenstein, DE 🇩🇪</span> · Hetzner Cloud</div>
+    <div><span class="t-blue">●</span> Data: <span class="t-green">never leaves your box</span></div>
+    <div class="t-muted">&nbsp;</div>
+    <div><span class="t-muted">$</span> <span class="t-green">openclaw chat</span></div>
+    <div><span class="t-purple">AI&gt;</span> Hey! What can I help you with today?</div>
+  </div>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span>🇪🇺</span> EU-only infrastructure</div>
+  <div class="trust-item"><span>🔒</span> GDPR compliant by default</div>
+  <div class="trust-item"><span>🧠</span> Mistral AI models</div>
+  <div class="trust-item"><span>⚡</span> Powered by OpenClaw</div>
+  <div class="trust-item"><span>🏠</span> Your data stays yours</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label">How it works</div>
+  <h2>From zero to your own AI in minutes</h2>
+  <p class="section-sub">No DevOps degree required. We handle the setup — you get a ready-to-go personal AI assistant.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Pick a plan</h3>
+      <p>Choose your box size. From a lightweight personal assistant to a full-power model capable of complex reasoning.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>We provision your box</h3>
+      <p>We spin up a Hetzner VPS in the EU datacenter of your choice, install OpenClaw, and load your Mistral model.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Connect your channels</h3>
+      <p>Link Telegram, WhatsApp, or Discord. Your AI is reachable wherever you are — no new app to install.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>It's yours</h3>
+      <p>Full SSH access. Your data, your model, your rules. Cancel anytime — the box is yours to keep or hand back.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="background: var(--surface); max-width: 100%; padding: 5rem 2rem;">
+  <div style="max-width: 1100px; margin: 0 auto;">
+    <div class="section-label">Features</div>
+    <h2>Everything you need, nothing you don't</h2>
+    <p class="section-sub">Built on open-source, designed for privacy, ready for real use.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🧠</div>
+        <h3>Mistral models — local</h3>
+        <p>Run Mistral Small, Mistral 7B, or Mixtral 8x7B directly on your box. No API keys, no per-token billing, no data leaving your server.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🤖</div>
+        <h3>OpenClaw agent platform</h3>
+        <p>Full OpenClaw installation: skills, memory, heartbeats, cron jobs, multi-channel messaging. A proper AI assistant, not just a chatbot.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💬</div>
+        <h3>Telegram / WhatsApp ready</h3>
+        <p>Talk to your AI through your existing messaging apps. No new interface to learn — it just shows up in your chat.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🇪🇺</div>
+        <h3>EU infrastructure only</h3>
+        <p>All boxes run in Hetzner datacenters in Germany, Finland, or the Netherlands. GDPR-compliant by architecture, not just policy.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔐</div>
+        <h3>You own the box</h3>
+        <p>Full root SSH access. Inspect everything, modify anything, take it anywhere. No lock-in, no black boxes.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔄</div>
+        <h3>Automatic updates</h3>
+        <p>OpenClaw and the OS stay up to date automatically. Model updates available via one command. Set it and forget it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EU SECTION -->
+<div class="eu-section">
+  <div class="eu-inner">
+    <div class="eu-content">
+      <div class="section-label" style="text-align:left">European by design</div>
+      <h2 style="text-align:left">Your data doesn't leave Europe</h2>
+      <p>US-based AI services operate under US law — meaning your data can be accessed by US authorities under the CLOUD Act, regardless of where servers are located.</p>
+      <p>EuroClaw runs entirely on Hetzner, a German company, in European datacenters, using Mistral — a French AI company. 100% European supply chain.</p>
+      <p>This isn't just a privacy feature. It's the architecture.</p>
+    </div>
+    <div class="eu-flags">
+      <div class="eu-flag-item">
+        <div class="flag">🇩🇪</div>
+        <div class="loc">Falkenstein, DE</div>
+      </div>
+      <div class="eu-flag-item">
+        <div class="flag">🇩🇪</div>
+        <div class="loc">Nuremberg, DE</div>
+      </div>
+      <div class="eu-flag-item">
+        <div class="flag">🇫🇮</div>
+        <div class="loc">Helsinki, FI</div>
+      </div>
+      <div class="eu-flag-item">
+        <div class="flag">🇳🇱</div>
+        <div class="loc">Hillegersberg, NL<br><small style="color:var(--muted);font-size:0.7rem">coming soon</small></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2>Simple, transparent pricing</h2>
+  <p class="section-sub">All plans include setup, OpenClaw, and a Mistral model. Cancel anytime.</p>
+  <div class="plans">
+    <div class="plan">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price"><sup>€</sup>12</div>
+      <div class="plan-sub">per month · billed monthly</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> Hetzner CX22 (2 vCPU, 4GB)</li>
+        <li><span class="check">✓</span> Mistral 7B · local</li>
+        <li><span class="check">✓</span> OpenClaw + Telegram</li>
+        <li><span class="check">✓</span> EU datacenter</li>
+        <li><span class="check">✓</span> SSH access</li>
+        <li><span class="check">✓</span> 40 GB SSD storage</li>
+      </ul>
+      <a href="#waitlist" class="plan-btn">Join waitlist</a>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">Most popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price"><sup>€</sup>29</div>
+      <div class="plan-sub">per month · billed monthly</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> Hetzner CX32 (4 vCPU, 8GB)</li>
+        <li><span class="check">✓</span> Mistral Small 3.1 · local</li>
+        <li><span class="check">✓</span> OpenClaw + all channels</li>
+        <li><span class="check">✓</span> EU datacenter (your choice)</li>
+        <li><span class="check">✓</span> SSH + web dashboard</li>
+        <li><span class="check">✓</span> 80 GB SSD storage</li>
+      </ul>
+      <a href="#waitlist" class="plan-btn">Join waitlist</a>
+    </div>
+    <div class="plan">
+      <div class="plan-name">Power</div>
+      <div class="plan-price"><sup>€</sup>69</div>
+      <div class="plan-sub">per month · billed monthly</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> Hetzner CCX33 (8 vCPU, 32GB)</li>
+        <li><span class="check">✓</span> Mixtral 8x7B · local</li>
+        <li><span class="check">✓</span> OpenClaw + all channels</li>
+        <li><span class="check">✓</span> Priority EU datacenter</li>
+        <li><span class="check">✓</span> SSH + web dashboard</li>
+        <li><span class="check">✓</span> 240 GB SSD storage</li>
+      </ul>
+      <a href="#waitlist" class="plan-btn">Join waitlist</a>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section id="waitlist" style="text-align:center; padding: 5rem 2rem;">
+  <div class="section-label">Early access</div>
+  <h2>Be first in line</h2>
+  <p class="section-sub">EuroClaw is launching soon. Drop your email and we'll reach out when it's ready.</p>
+  <form style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap; margin-top:2rem;" onsubmit="handleSubmit(event)">
+    <input
+      type="email"
+      placeholder="you@example.com"
+      id="email-input"
+      required
+      style="padding:0.85rem 1.2rem; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:1rem; width:300px; outline:none;"
+    />
+    <button type="submit" class="btn-primary" style="border:none; cursor:pointer;">
+      Join waitlist →
+    </button>
+  </form>
+  <p id="form-message" style="margin-top:1rem; color:var(--accent2); display:none;">✓ You're on the list. We'll be in touch!</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:0.5rem">
+    <strong>EuroClaw.eu</strong> — Personal AI, built for Europe
+  </p>
+  <p>Powered by <a href="https://openclaw.ai" target="_blank">OpenClaw</a> · Models by <a href="https://mistral.ai" target="_blank">Mistral AI</a> · Infrastructure by <a href="https://hetzner.com" target="_blank">Hetzner</a></p>
+  <p style="margin-top:1rem">© 2026 EuroClaw · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+</footer>
+
+<script>
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const email = document.getElementById('email-input').value;
+    const msg = document.getElementById('form-message');
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) {
+        msg.textContent = '✓ You\'re on the list. We\'ll be in touch!';
+        msg.style.color = 'var(--accent2)';
+        document.getElementById('email-input').value = '';
+      } else {
+        msg.textContent = '✗ Something went wrong. Try again.';
+        msg.style.color = '#f87171';
+      }
+    } catch {
+      msg.textContent = '✗ Could not reach server. Try again.';
+      msg.style.color = '#f87171';
+    }
+    msg.style.display = 'block';
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>
